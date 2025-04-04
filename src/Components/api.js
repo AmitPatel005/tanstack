@@ -1,36 +1,19 @@
-// const api = async (username, password, navigate) => {
-//     try {
-//       const response = await fetch('https://dummyjson.com/auth/login', {
-//         method: 'POST',
-//         headers: {
-//           'Content-Type': 'application/json',
-//         },
-//         body: JSON.stringify({ username, password }),
-//       });
-  
-//       const data = await response.json();
-  
-//       if (response.ok) {
-        
-//         localStorage.setItem('accessToken', data.token);
-//         navigate('/dashboard');
-//       } else {
-        
-//         alert(data.message || 'Invalid username or password.');
-//       }
-//     } catch (error) {
-      
-//       alert('An error occurred: ' + error.message);
-//     }
-//   }
-  
-//   export default api;
+
   
 import axios from "axios";
 
 const api = axios.create({
   baseURL:"https://dummyjson.com/auth"
 })
+
+api.interceptors.request.use((request)=>{
+  const token = localStorage.getItem("token")
+  if(token){
+    request.headers["Authorization"]= `Bearer ${token}`
+  }
+  return request
+})
+
 
 
 const LoginUser =async (data)=>{

@@ -15,7 +15,7 @@ const Login = () => {
     const mutation = useMutation({
         mutationFn:LoginUser,
         onSuccess: (data) => {
-            console.log("onSuccess", data)
+        
             alert("Login Successful!")
             localStorage.setItem("token", data.accessToken)
             navigate("/dashboard")
@@ -25,7 +25,7 @@ const Login = () => {
 
     const handleSubmit=(e)=>{
         e.preventDefault()
-        console.log("onSubmit: ", data)
+       
         mutation.mutate(data)
         
     }

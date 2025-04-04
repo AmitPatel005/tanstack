@@ -5,10 +5,9 @@ import './AddUser.css';
 
 const AddUser = () => {
   const [newUser, setNewUser] = useState({ name: '', lName: '' });
-  const [editingUser, setEditingUser] = useState(null); // State to store the user being edited
+  const [editingUser, setEditingUser] = useState(null);
   const queryClient = useQueryClient();
 
-  // Fetch users data
   const { data: users, isLoading, isError } = useQuery({
     queryKey: ['users'],
     queryFn: fetchUsers,
@@ -38,7 +37,7 @@ const AddUser = () => {
     mutationFn: updateUser,
     onSuccess: () => {
       queryClient.invalidateQueries(['users']);
-      setEditingUser(null); // Reset the editing user after success
+      setEditingUser(null); 
     },
     onError: (error) => {
       console.error('Error updating user:', error);
@@ -95,48 +94,36 @@ const AddUser = () => {
             : editingUser ? 'Update User' : 'Add User'}
         </button>
       </form>
-      {mutation.isError && <p>Error adding user</p>}
-      {mutation.isSuccess && !editingUser && <p>User added successfully!</p>}
-      {updateMutation.isError && <p>Error updating user</p>}
-      {updateMutation.isSuccess && <p>User updated successfully!</p>}
 
       {isLoading && <p>Loading users...</p>}
       {isError && <p>Error fetching users</p>}
 
       <h4>Users List</h4>
-      <ul>
-        {users?.map((user) => (
-          <li key={user.id}>
-            {user.name} {user.lName}
-            <button onClick={() => setEditingUser(user)}>Edit</button>
-            <button onClick={() => handleDeleteSubmit(user.id)}>Delete</button>
-          </li>
-        ))}
-      </ul>
+<table>
+  <thead>
+    <tr>
+      <th>ID</th>
+      <th>First Name</th>
+      <th>Last Name</th>
+      <th>Actions</th>
+    </tr>
+  </thead>
+  <tbody>
+    {users?.map((user) => (
+      <tr key={user.id}>
+        <td>{user.id}</td>
+        <td>{user.name}</td>
+        <td>{user.lName}</td>
+        <td>
+          <button onClick={() => setEditingUser(user)}>Edit</button>
+          <button onClick={() => handleDeleteSubmit(user.id)}>Delete</button>
+        </td>
+      </tr>
+    ))}
+  </tbody>
+</table>
 
-      {/* Edit User Form */}
-      {editingUser && (
-        <div>
-          <h3>Edit User Details</h3>
-          <form onSubmit={handleUpdateSubmit}>
-            <input
-              type="text"
-              placeholder="First Name"
-              value={newUser.name}
-              onChange={(e) => setNewUser({ ...newUser, name: e.target.value })}
-            />
-            <input
-              type="text"
-              placeholder="Last Name"
-              value={newUser.lName}
-              onChange={(e) => setNewUser({ ...newUser, lName: e.target.value })}
-            />
-            <button type="submit" disabled={updateMutation.isLoading}>
-              {updateMutation.isLoading ? 'Updating...' : 'Update User'}
-            </button>
-          </form>
-        </div>
-      )}
+      
     </div>
   );
 };
